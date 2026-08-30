@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Overview Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="disclaimer-banner">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    This system provides AI-generated risk estimates for educational/demo purposes only. It is <b>not a substitute
+    for professional medical diagnosis</b>. Always consult a licensed physician for clinical decisions.
+</div>
+
+<!-- ===== Stat Cards ===== -->
+<div class="stat-grid">
+    <div class="stat-card glass-card">
+        <div class="stat-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">{{ total_patients }}</span>
+            <span class="stat-label">Total Patients</span>
+        </div>
+    </div>
+    <div class="stat-card glass-card">
+        <div class="stat-icon icon-green"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">{{ total_diagnoses }}</span>
+            <span class="stat-label">Diagnoses Run</span>
+        </div>
+    </div>
+    <div class="stat-card glass-card">
+        <div class="stat-icon icon-red"><i class="bi bi-heart-pulse-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">{{ high_risk_count }}</span>
+            <span class="stat-label">High Risk Cases</span>
+        </div>
+    </div>
+    <div class="stat-card glass-card">
+        <div class="stat-icon icon-amber"><i class="bi bi-cpu-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">2</span>
+            <span class="stat-label">AI Models Active</span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Charts + Recent activity ===== -->
+<div class="dashboard-grid">
+    <div class="panel-card glass-card">
+        <h3><i class="bi bi-pie-chart-fill"></i> Risk Level Distribution</h3>
+        <canvas id="riskChart" height="220"></canvas>
+    </div>
+
+    <div class="panel-card glass-card">
+        <h3><i class="bi bi-clock-history"></i> Recent Diagnoses</h3>
+        {% if recent_diagnoses %}
+        <div class="recent-list">
+            {% for d in recent_diagnoses %}
+            <a href="{{ url_for('report', diagnosis_id=d['id']) }}" class="recent-item">
+                <div class="recent-avatar"><i class="bi bi-person-fill"></i></div>
+                <div class="recent-info">
+                    <span class="recent-name">{{ d['patient_name'] }}</span>
+                    <span class="recent-date">{{ d['created_at'] }}</span>
+                </div>
+                <span class="risk-pill risk-{{ d['risk_level']|lower }}">{{ d['risk_level'] }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">No diagnoses recorded yet. Start by adding a patient.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="quick-actions">
+    <a href="{{ url_for('new_patient') }}" class="action-card glass-card">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>Add New Patient</span>
+    </a>
+    <a href="{{ url_for('patients') }}" class="action-card glass-card">
+        <i class="bi bi-search"></i>
+        <span>Browse Patients</span>
+    </a>
+    <a href="{{ url_for('history') }}" class="action-card glass-card">
+        <i class="bi bi-file-earmark-medical-fill"></i>
+        <span>View Full History</span>
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const ctx = document.getElementById('riskChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Low', 'Moderate', 'High'],
+        datasets: [{
+            data: [{{ risk_data['Low'] }}, {{ risk_data['Moderate'] }}, {{ risk_data['High'] }}],
+            backgroundColor: ['#00A676', '#F5A623', '#E5484D'],
+            borderWidth: 0,
+            hoverOffset: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        cutout: '65%',
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 13 }, padding: 18 } }
+        }
+    }
+});
+</script>
+{% endblock %}

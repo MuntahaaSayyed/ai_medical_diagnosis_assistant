@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ patient['full_name'] }} — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Patient Profile{% endblock %}
+
+{% block content %}
+
+<div class="patient-banner glass-card">
+    <div class="table-avatar table-avatar-lg"><i class="bi bi-person-fill"></i></div>
+    <div>
+        <h3>{{ patient['full_name'] }}</h3>
+        <span>{{ patient['age'] }} yrs • {{ patient['gender'] }} • {{ patient['contact'] or 'No contact on file' }}</span>
+    </div>
+    <a href="{{ url_for('diagnose', patient_id=patient['id']) }}" class="btn-primary ml-auto">
+        <i class="bi bi-clipboard2-plus-fill"></i> New Diagnosis
+    </a>
+</div>
+
+<div class="panel-card glass-card table-card">
+    <h3><i class="bi bi-clock-history"></i> Diagnosis History</h3>
+
+    {% if diagnoses %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Risk Level</th>
+                <th>Confidence</th>
+                <th>X-Ray</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in diagnoses %}
+            <tr>
+                <td>{{ d['created_at'] }}</td>
+                <td><span class="risk-pill risk-{{ d['risk_level']|lower }}">{{ d['risk_level'] }}</span></td>
+                <td>{{ (d['confidence'] * 100) | round(1) }}%</td>
+                <td>
+                    {% if d['xray_result'] %}
+                        <span class="xray-result-tag {% if 'Abnormal' in d['xray_result'] %}xray-abnormal{% else %}xray-normal{% endif %}">
+                            {{ d['xray_result'] }}
+                        </span>
+                    {% else %}
+                        <span class="text-muted">Not provided</span>
+                    {% endif %}
+                </td>
+                <td class="table-actions">
+                    <a href="{{ url_for('report', diagnosis_id=d['id']) }}" class="btn-icon" title="View Report">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty-state">No diagnosis history yet for this patient.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

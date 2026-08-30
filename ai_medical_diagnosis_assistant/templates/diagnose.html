@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}New Diagnosis — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}AI Diagnosis Session{% endblock %}
+
+{% block content %}
+
+<div class="patient-banner glass-card">
+    <div class="table-avatar table-avatar-lg"><i class="bi bi-person-fill"></i></div>
+    <div>
+        <h3>{{ patient['full_name'] }}</h3>
+        <span>{{ patient['age'] }} yrs • {{ patient['gender'] }} • {{ patient['contact'] or 'No contact on file' }}</span>
+    </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+<div class="diagnosis-grid">
+
+    <!-- ===== Symptoms Panel ===== -->
+    <div class="panel-card glass-card">
+        <h3><i class="bi bi-clipboard2-pulse-fill"></i> Reported Symptoms</h3>
+        <div class="checkbox-grid">
+            <label class="check-tile"><input type="checkbox" name="fever"><i class="bi bi-thermometer-high"></i> Fever</label>
+            <label class="check-tile"><input type="checkbox" name="cough"><i class="bi bi-lungs-fill"></i> Cough</label>
+            <label class="check-tile"><input type="checkbox" name="fatigue"><i class="bi bi-battery-half"></i> Fatigue</label>
+            <label class="check-tile"><input type="checkbox" name="shortness_of_breath"><i class="bi bi-wind"></i> Shortness of Breath</label>
+            <label class="check-tile"><input type="checkbox" name="chest_pain"><i class="bi bi-heart-pulse"></i> Chest Pain</label>
+            <label class="check-tile"><input type="checkbox" name="headache"><i class="bi bi-emoji-dizzy"></i> Headache</label>
+            <label class="check-tile"><input type="checkbox" name="body_ache"><i class="bi bi-person-arms-up"></i> Body Ache</label>
+            <label class="check-tile"><input type="checkbox" name="sore_throat"><i class="bi bi-mic-mute-fill"></i> Sore Throat</label>
+        </div>
+
+        <h3 class="mt-section"><i class="bi bi-activity"></i> Vitals</h3>
+        <div class="form-row">
+            <div class="form-group form-group-sm">
+                <label>Heart Rate (bpm)</label>
+                <input type="number" name="heart_rate" value="80" min="30" max="220">
+            </div>
+            <div class="form-group form-group-sm">
+                <label>Temperature (°C)</label>
+                <input type="number" step="0.1" name="temperature" value="37.0" min="30" max="45">
+            </div>
+            <div class="form-group form-group-sm">
+                <label>SpO2 (%)</label>
+                <input type="number" name="spo2" value="98" min="50" max="100">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Clinical Notes (optional)</label>
+            <textarea name="notes" rows="3" placeholder="Any additional observations..."></textarea>
+        </div>
+    </div>
+
+    <!-- ===== X-ray upload Panel ===== -->
+    <div class="panel-card glass-card">
+        <h3><i class="bi bi-file-earmark-medical-fill"></i> Chest X-Ray (Optional)</h3>
+        <p class="form-subtitle">Upload a chest X-ray image for AI-assisted screening (demo CNN model).</p>
+
+        <label class="upload-dropzone" id="dropzone">
+            <input type="file" name="xray_image" accept=".png,.jpg,.jpeg" id="xrayInput">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <span id="dropzoneText">Click or drag an X-ray image here (PNG/JPG)</span>
+        </label>
+        <img id="xrayPreview" class="xray-preview" style="display:none;">
+
+        <div class="info-box">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>The X-ray model is a demo CNN trained on synthetic data for illustration. Do not use for real diagnostic decisions.</span>
+        </div>
+    </div>
+
+</div>
+
+<button type="submit" class="btn-primary-full btn-run">
+    <i class="bi bi-cpu-fill"></i> Run AI Diagnosis
+</button>
+</form>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const xrayInput = document.getElementById('xrayInput');
+const xrayPreview = document.getElementById('xrayPreview');
+const dropzoneText = document.getElementById('dropzoneText');
+
+xrayInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            xrayPreview.src = e.target.result;
+            xrayPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
+        dropzoneText.textContent = this.files[0].name;
+    }
+});
+</script>
+{% endblock %}

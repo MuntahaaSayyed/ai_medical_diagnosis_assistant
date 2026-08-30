@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}History — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Diagnosis History{% endblock %}
+
+{% block content %}
+
+<div class="panel-card glass-card table-card">
+    {% if diagnoses %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Risk Level</th>
+                <th>Confidence</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in diagnoses %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('patient_detail', patient_id=d['patient_id']) }}" class="table-link">
+                        {{ d['patient_name'] }}
+                    </a>
+                </td>
+                <td>{{ d['created_at'] }}</td>
+                <td><span class="risk-pill risk-{{ d['risk_level']|lower }}">{{ d['risk_level'] }}</span></td>
+                <td>{{ (d['confidence'] * 100) | round(1) }}%</td>
+                <td class="table-actions">
+                    <a href="{{ url_for('report', diagnosis_id=d['id']) }}" class="btn-icon" title="View Report">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty-state">No diagnoses have been recorded yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

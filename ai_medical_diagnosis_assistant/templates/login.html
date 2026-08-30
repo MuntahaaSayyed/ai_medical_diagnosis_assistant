@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Login — AI Medical Diagnosis Assistant{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-brand-panel">
+        <div class="auth-brand-content">
+            <i class="bi bi-heart-pulse-fill auth-brand-icon"></i>
+            <h1>MediAssist<span>AI</span></h1>
+            <p>AI-powered clinical decision support for modern healthcare teams.</p>
+            <ul class="auth-feature-list">
+                <li><i class="bi bi-check-circle-fill"></i> Symptom-based risk analysis</li>
+                <li><i class="bi bi-check-circle-fill"></i> X-ray image screening (demo)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Secure patient record history</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-card glass-card">
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Sign in to access the dashboard</p>
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="text" name="username" placeholder="e.g. admin" required autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-lock-fill"></i>
+                        <input type="password" name="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary-full">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                </button>
+            </form>
+
+            <p class="auth-switch">Don't have an account? <a href="{{ url_for('register') }}">Create one</a></p>
+            <p class="auth-demo-hint">Demo credentials: <b>admin</b> / <b>admin123</b></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

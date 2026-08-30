@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Create Account — AI Medical Diagnosis Assistant{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-brand-panel">
+        <div class="auth-brand-content">
+            <i class="bi bi-heart-pulse-fill auth-brand-icon"></i>
+            <h1>MediAssist<span>AI</span></h1>
+            <p>Join your hospital's AI-assisted diagnosis workspace.</p>
+            <ul class="auth-feature-list">
+                <li><i class="bi bi-check-circle-fill"></i> Role-based staff accounts</li>
+                <li><i class="bi bi-check-circle-fill"></i> Centralized patient records</li>
+                <li><i class="bi bi-check-circle-fill"></i> Instant AI risk scoring</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-card glass-card">
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">Register as hospital staff</p>
+
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <input type="text" name="full_name" placeholder="Dr. Jane Doe" required autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="text" name="username" placeholder="Choose a username" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-lock-fill"></i>
+                        <input type="password" name="password" placeholder="Choose a password" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="input-icon-wrap">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <select name="role">
+                            <option value="Doctor">Doctor</option>
+                            <option value="Nurse">Nurse</option>
+                            <option value="Administrator">Administrator</option>
+                            <option value="Radiologist">Radiologist</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary-full">
+                    <i class="bi bi-person-plus-fill"></i> Create Account
+                </button>
+            </form>
+
+            <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

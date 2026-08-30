@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Diagnosis Report — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Diagnosis Report{% endblock %}
+
+{% block content %}
+
+<div class="report-wrap">
+    <div class="panel-card glass-card report-card" id="printableReport">
+
+        <div class="report-header">
+            <div>
+                <h2><i class="bi bi-heart-pulse-fill"></i> MediAssist AI — Diagnosis Report</h2>
+                <span class="report-meta">Generated on {{ generated_at }}</span>
+            </div>
+            <span class="risk-pill risk-pill-lg risk-{{ diagnosis['risk_level']|lower }}">
+                {{ diagnosis['risk_level'] }} Risk
+            </span>
+        </div>
+
+        <hr>
+
+        <div class="report-section">
+            <h4>Patient Information</h4>
+            <div class="report-grid">
+                <div><span class="rlabel">Name</span><span class="rval">{{ patient['full_name'] }}</span></div>
+                <div><span class="rlabel">Age</span><span class="rval">{{ patient['age'] }}</span></div>
+                <div><span class="rlabel">Gender</span><span class="rval">{{ patient['gender'] }}</span></div>
+                <div><span class="rlabel">Contact</span><span class="rval">{{ patient['contact'] or '—' }}</span></div>
+            </div>
+        </div>
+
+        <div class="report-section">
+            <h4>AI Symptom Risk Assessment</h4>
+            <div class="risk-confidence-bar-wrap">
+                <span>Model Confidence</span>
+                <div class="confidence-bar">
+                    <div class="confidence-fill risk-fill-{{ diagnosis['risk_level']|lower }}"
+                         style="width: {{ (diagnosis['confidence'] * 100) | round(1) }}%;"></div>
+                </div>
+                <span>{{ (diagnosis['confidence'] * 100) | round(1) }}%</span>
+            </div>
+
+            <div class="report-grid symptoms-grid">
+                {% for key, val in symptoms.items() %}
+                    {% if key not in ['age','heart_rate','temperature','spo2'] %}
+                    <div class="symptom-tag {% if val %}symptom-active{% endif %}">
+                        <i class="bi {% if val %}bi-check-circle-fill{% else %}bi-x-circle{% endif %}"></i>
+                        {{ key.replace('_',' ')|title }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="report-grid vitals-grid">
+                <div><span class="rlabel">Heart Rate</span><span class="rval">{{ symptoms['heart_rate'] }} bpm</span></div>
+                <div><span class="rlabel">Temperature</span><span class="rval">{{ symptoms['temperature'] }} °C</span></div>
+                <div><span class="rlabel">SpO2</span><span class="rval">{{ symptoms['spo2'] }} %</span></div>
+            </div>
+        </div>
+
+        {% if diagnosis['xray_result'] %}
+        <div class="report-section">
+            <h4>Chest X-Ray AI Screening (Demo Model)</h4>
+            <div class="xray-result-wrap">
+                <img src="{{ url_for('uploaded_file', filename=diagnosis['xray_filename']) }}" class="xray-report-img">
+                <div>
+                    <span class="rlabel">AI Result</span>
+                    <span class="rval xray-result-tag {% if 'Abnormal' in diagnosis['xray_result'] %}xray-abnormal{% else %}xray-normal{% endif %}">
+                        {{ diagnosis['xray_result'] }}
+                    </span>
+                    <span class="rlabel mt-8">Confidence</span>
+                    <span class="rval">{{ (diagnosis['xray_confidence'] * 100) | round(1) }}%</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if diagnosis['notes'] %}
+        <div class="report-section">
+            <h4>Clinical Notes</h4>
+            <p class="report-notes">{{ diagnosis['notes'] }}</p>
+        </div>
+        {% endif %}
+
+        <div class="disclaimer-banner mt-section">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            This AI-generated report is for demonstration purposes only and does not constitute a medical diagnosis.
+            Clinical decisions must always be made by a licensed healthcare professional.
+        </div>
+    </div>
+
+    <div class="report-actions">
+        <button onclick="window.print()" class="btn-primary"><i class="bi bi-printer-fill"></i> Print / Save PDF</button>
+        <a href="{{ url_for('patient_detail', patient_id=patient['id']) }}" class="btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Patient
+        </a>
+    </div>
+</div>
+
+{% endblock %}

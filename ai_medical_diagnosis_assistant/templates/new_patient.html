@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Add Patient — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Add New Patient{% endblock %}
+
+{% block content %}
+<div class="form-page-wrap">
+    <div class="panel-card glass-card form-card">
+        <h3><i class="bi bi-person-plus-fill"></i> Patient Registration</h3>
+        <p class="form-subtitle">Enter basic patient details to begin a new diagnosis session.</p>
+
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" placeholder="e.g. John Carter" required>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label>Age</label>
+                    <input type="number" name="age" min="0" max="120" placeholder="e.g. 45" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group-sm">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" name="contact" placeholder="e.g. +91 98765 43210">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-full">
+                <i class="bi bi-arrow-right-circle-fill"></i> Continue to Diagnosis
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

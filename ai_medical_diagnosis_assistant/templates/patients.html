@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Patients — AI Medical Diagnosis Assistant{% endblock %}
+{% block page_title %}Patients{% endblock %}
+
+{% block content %}
+
+<div class="page-header-row">
+    <form method="GET" class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" placeholder="Search patients by name..." value="{{ search }}">
+    </form>
+    <a href="{{ url_for('new_patient') }}" class="btn-primary">
+        <i class="bi bi-person-plus-fill"></i> Add Patient
+    </a>
+</div>
+
+<div class="panel-card glass-card table-card">
+    {% if patients %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Contact</th>
+                <th>Registered</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in patients %}
+            <tr>
+                <td>
+                    <div class="table-patient">
+                        <div class="table-avatar"><i class="bi bi-person-fill"></i></div>
+                        <span>{{ p['full_name'] }}</span>
+                    </div>
+                </td>
+                <td>{{ p['age'] }}</td>
+                <td>{{ p['gender'] }}</td>
+                <td>{{ p['contact'] or '—' }}</td>
+                <td>{{ p['created_at'] }}</td>
+                <td class="table-actions">
+                    <a href="{{ url_for('patient_detail', patient_id=p['id']) }}" class="btn-icon" title="View">
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+                    <a href="{{ url_for('diagnose', patient_id=p['id']) }}" class="btn-icon btn-icon-green" title="New Diagnosis">
+                        <i class="bi bi-clipboard2-pulse-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty-state">No patients found. <a href="{{ url_for('new_patient') }}">Add the first patient</a>.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
